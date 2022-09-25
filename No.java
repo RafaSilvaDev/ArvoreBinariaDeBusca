@@ -1,11 +1,12 @@
 
+
 public class No {
-	
+
 	private int valor;
 	private No direito;
 	private No esquerdo;
-	
-	public No (int valor, No direito, No esquerdo) {
+
+	public No(int valor, No direito, No esquerdo) {
 		this.valor = valor;
 		this.direito = direito;
 		this.esquerdo = esquerdo;
@@ -34,15 +35,8 @@ public class No {
 	public void setEsquerdo(No esquerdo) {
 		this.esquerdo = esquerdo;
 	}
-	
-	@Override
-	public String toString() {
-		return "[" + valor + "]";
-	}
-	
+
 	public boolean ehFolha() {
 		return (direito == null && esquerdo == null);
 	}
-	
-
 }

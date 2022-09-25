@@ -1,232 +1,349 @@
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ArvoreBinariaTest {
-	
-	private ArvoreBinaria arvore = new ArvoreBinaria();
-	private ArvoreBinariaBuilder builder = new ArvoreBinariaBuilder(arvore);
+
+	private ArvoreBinariaBusca arvore;
+	private ArvoreBinariaBuilder builder = new ArvoreBinariaBuilder();
 
 	@BeforeEach
-	void inicializarArvore() {
-		arvore = new ArvoreBinaria();
+	void inicializaArvore() {
+		arvore = new ArvoreBinariaBusca();
+	}
+
+	@Test
+	void deveRetornarVerdadeiroEhVazia() {
+		arvore = builder.montaArvoreVazia();
+
+		assertTrue(arvore.ehVazia());
+	}
+
+	@Test
+	void deveRetornarFalsoEhVazia() {
+		arvore = builder.montaArvoreSoRaiz();
+
+		assertFalse(arvore.ehVazia());
+	}
+
+	@Test
+	void deveRetornarQuantidadeSubNosArvoreVazia() {
+		arvore = builder.montaArvoreVazia();
+		assertEquals(0, arvore.quantidadeSubNos(arvore.getRaiz()));
+	}
+
+	@Test
+	void deveRetornarQuantidadeSubNosArvoreSoRaiz() {
+		arvore = builder.montaArvoreSoRaiz();
+		assertEquals(1, arvore.quantidadeSubNos(arvore.getRaiz()));
+	}
+
+	@Test
+	void deveRetornarQuantidadeSubNosArvoreComElementos() {
+		arvore = builder.montaArvoreUmFilhoDireito();
+		assertEquals(2, arvore.quantidadeSubNos(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreUmFilhoEsquerdo();
+		assertEquals(2, arvore.quantidadeSubNos(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreDoisFilhos();
+		assertEquals(3, arvore.quantidadeSubNos(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreUmDireitoDoisEsquerdos();
+		assertEquals(4, arvore.quantidadeSubNos(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreDoisDireitoUmEsquerdos();
+		assertEquals(4, arvore.quantidadeSubNos(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreDoisDireitoDoisEsquerdos();
+		assertEquals(5, arvore.quantidadeSubNos(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreCheia();
+		assertEquals(7, arvore.quantidadeSubNos(arvore.getRaiz()));
+
+	}
+
+	@Test
+	void deveRetornarAlturaSubNosArvoreVazia() {
+		arvore = builder.montaArvoreVazia();
+		assertEquals(0, arvore.altura(arvore.getRaiz()));
+	}
+
+	@Test
+	void deveRetornarAlturaSubNosArvoreSoRaiz() {
+		arvore = builder.montaArvoreSoRaiz();
+		assertEquals(0, arvore.altura(arvore.getRaiz()));
+	}
+
+	@Test
+	void deveRetornarAlturaSubNosArvoreComElementos() {
+		arvore = builder.montaArvoreUmFilhoDireito();
+		assertEquals(1, arvore.altura(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreUmFilhoEsquerdo();
+		assertEquals(1, arvore.altura(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreDoisFilhos();
+		assertEquals(1, arvore.altura(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreUmDireitoDoisEsquerdos();
+		assertEquals(2, arvore.altura(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreDoisDireitoUmEsquerdos();
+		assertEquals(2, arvore.altura(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreDoisDireitoDoisEsquerdos();
+		assertEquals(2, arvore.altura(arvore.getRaiz()));
+
+		arvore = builder.montaArvoreCheia();
+		assertEquals(2, arvore.altura(arvore.getRaiz()));
+
+	}
+	
+	
+	@Test
+	void inserirNoArvoreVazia() {
+		arvore = builder.montaArvoreVazia();
+		
+		arvore.adicionarNo(5);
+		
+		assertEquals(5, arvore.getRaiz().getValor());
+		assertTrue(arvore.contem(5));
+		assertNull(arvore.getRaiz().getDireito());
+		assertNull(arvore.getRaiz().getEsquerdo());
 	}
 	
 	@Test
-	void deveRetornarTrueSeArvoreVazia() {
+	void inserirNoArvoreSoRaiz() {
+		arvore = builder.montaArvoreSoRaiz();
+		
+		arvore.adicionarNo(7);
+		
+		assertEquals(5, arvore.getRaiz().getValor());
+		assertTrue(arvore.contem(7));
+		assertTrue(arvore.pegarNoArvore(7).ehFolha());
+
+	}
+	
+	
+	@Test
+	void inserirNoArvoreComElementosSoFilhoDireito() {
+		
+		arvore = builder.montaArvoreUmFilhoDireito();
+		arvore.adicionarNo(3);
+		
+		assertEquals(5, arvore.getRaiz().getValor());
+		assertTrue(arvore.contem(3));
+		assertTrue(arvore.pegarNoArvore(3).ehFolha());
+		assertEquals(3, arvore.quantidadeNosArvore());
+		
+	}
+	
+	@Test
+	void inserirNoArvoreComElementosSoFilhoEsquerdo() {
+		
+		arvore = builder.montaArvoreUmFilhoEsquerdo();
+		arvore.adicionarNo(7);
+		
+		assertEquals(5, arvore.getRaiz().getValor());
+		assertTrue(arvore.contem(7));
+		assertTrue(arvore.pegarNoArvore(7).ehFolha());
+		assertEquals(3, arvore.quantidadeNosArvore());
+	}
+	
+	@Test
+	void inserirNoArvoreComElementosDoisFilhosDireitoEsquerdo() {
+		arvore = builder.montaArvoreCheia();
+		
+		arvore.adicionarNo(10);
+		
+		assertEquals(5, arvore.getRaiz().getValor());
+		assertTrue(arvore.contem(10));
+		assertTrue(arvore.pegarNoArvore(10).ehFolha());
+		assertEquals(8, arvore.quantidadeNosArvore());
+		assertEquals(3, arvore.alturaArvore());
+		
+	}
+	
+	@Test
+	void removerNoArvoreVazia() {
+		arvore = builder.montaArvoreVazia();
+		assertThrows(IllegalArgumentException.class, () -> arvore.remover(5));
+	}
+	
+	@Test
+	void removerArvoreApenasRaiz() {
+		arvore = builder.montaArvoreSoRaiz();
+		arvore.remover(5);
 		assertTrue(arvore.ehVazia());
 	}
 	
 	@Test
-	void deveRetornarFalseSeArvoreComElementos() {
-		No noRaiz = new No(1, null, null);
-		arvore.setRaiz(noRaiz);
-		assertFalse(arvore.ehVazia());
-	}
-	
-	@Test
-	void deveRetornarZeroArvoreVazia() {
-		arvore = builder.montaArvoreVazia();
-		assertEquals(0, arvore.quantidadeNosArvore());
-	}
-	
-	@Test
-	void deveRetornarUmArvoreSoTemRaiz() {
-		arvore = builder.montaArvoreSoRaiz();
+	void removerArvoreComElementos() {
+		arvore = builder.montaArvoreUmFilhoDireito();
+		arvore.remover(7);
+		assertFalse(arvore.contem(7));
 		assertEquals(1, arvore.quantidadeNosArvore());
-	}
-	
-	@Test
-	void deveRetornarQuantidadeNosArvoreComElementos() {
-		arvore = builder.montaArvoreSoUmFilhoDireito();
+
+		arvore = builder.montaArvoreUmFilhoEsquerdo();
+		arvore.remover(3);
+		assertFalse(arvore.contem(3));
+		assertEquals(1, arvore.quantidadeNosArvore());
+
+		arvore = builder.montaArvoreDoisFilhos();
+		arvore.remover(7);
+		assertFalse(arvore.contem(7));
 		assertEquals(2, arvore.quantidadeNosArvore());
-		
-		arvore = builder.montaArvoreSoUmFilhoEsquerda();
-		assertEquals(2, arvore.quantidadeNosArvore());
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoUmEsquerda();
+
+		arvore = builder.montaArvoreUmDireitoDoisEsquerdos();
+		arvore.remover(1);
+		assertFalse(arvore.contem(1));
 		assertEquals(3, arvore.quantidadeNosArvore());
-		
-		arvore = builder.montaArvoreSoDoisFilhoDireitoUmEsquerda();
+
+		arvore = builder.montaArvoreDoisDireitoUmEsquerdos();
+		arvore.remover(8);
+		assertFalse(arvore.contem(8));
+		assertEquals(3, arvore.quantidadeNosArvore());
+
+		arvore = builder.montaArvoreDoisDireitoDoisEsquerdos();
+		arvore.remover(3);
+		assertFalse(arvore.contem(3));
 		assertEquals(4, arvore.quantidadeNosArvore());
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoDoisEsquerda();
-		assertEquals(4, arvore.quantidadeNosArvore());
-		
-		arvore = builder.montaArvoreBinariaCheia();
-		assertEquals(7, arvore.quantidadeNosArvore());
-		
+
+		arvore = builder.montaArvoreCheia();
+		arvore.remover(6);
+		assertFalse(arvore.contem(6));
+		assertEquals(6, arvore.quantidadeNosArvore());
 	}
 	
+	// VISITAS
+	
+	// #-#-# VISITA PRE ORDEM #-#-#
+	
 	@Test
-	void deveRetornarAlturaZeroArvoreVazia() {
+	void visitasArvoreVazia() {
 		arvore = builder.montaArvoreVazia();
-		assertEquals(0, arvore.alturaArvore());
+		assertThrows(IllegalArgumentException.class, () -> arvore.visitaPreOrdem());
+		assertThrows(IllegalArgumentException.class, () -> arvore.visitaInOrdem());
+		assertThrows(IllegalArgumentException.class, () -> arvore.visitaPosOrdem());
 	}
 	
 	@Test
-	void deveRetornarAlturaZeroArvoreSoTemRaiz() {
+	void visitasArvoreApenasRaiz() {
 		arvore = builder.montaArvoreSoRaiz();
-		assertEquals(0, arvore.alturaArvore());
+		System.out.println("\n\nAPENAS RAIZ: --> 5");
+		arvore.visitaPreOrdem();
+		arvore.visitaInOrdem();
+		arvore.visitaPosOrdem();
 	}
 	
 	@Test
-	void deveRetornarAlturaNosArvoreComElementos() {
-		arvore = builder.montaArvoreSoUmFilhoDireito();
-		assertEquals(1, arvore.alturaArvore());
-		
-		arvore = builder.montaArvoreSoUmFilhoEsquerda();
-		assertEquals(1, arvore.alturaArvore());
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoUmEsquerda();
-		assertEquals(1, arvore.alturaArvore());
-		
-		arvore = builder.montaArvoreSoDoisFilhoDireitoUmEsquerda();
-		assertEquals(2, arvore.alturaArvore());
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoDoisEsquerda();
-		assertEquals(2, arvore.alturaArvore());
-		
-		arvore = builder.montaArvoreBinariaCheia();
-		assertEquals(2, arvore.alturaArvore());
-		
+	void visitaPreOrdemArvoreComElementos() {
+		System.out.println("\n\n#-#-# VISITA PRE ORDEM #-#-#");
+		arvore = builder.montaArvoreUmFilhoDireito();
+		System.out.println("\n\n\nUM FILHO DIREITO: --> 5, 7");
+		arvore.visitaPreOrdem();
+
+		arvore = builder.montaArvoreUmFilhoEsquerdo();
+		System.out.println("\n\n\nUM FILHO ESQUERDO: --> 5, 3");
+		arvore.visitaPreOrdem();
+
+		arvore = builder.montaArvoreDoisFilhos();
+		System.out.println("\n\n\nDOIS FILHOS: --> 5, 7, 3");
+		arvore.visitaPreOrdem();
+
+		arvore = builder.montaArvoreUmDireitoDoisEsquerdos();
+		System.out.println("\n\n\nUM FILHO DIREITO E DOIS ESQUERDOS: --> 5, 7, 3, 1");
+		arvore.visitaPreOrdem();
+
+		arvore = builder.montaArvoreDoisDireitoUmEsquerdos();
+		System.out.println("\n\n\nUM FILHO ESQUERDO E DOIS DIREITOS: --> 5, 7, 8, 3");
+		arvore.visitaPreOrdem();
+
+		arvore = builder.montaArvoreDoisDireitoDoisEsquerdos();
+		System.out.println("\n\n\nDOIS FILHOS DIREITOS E DOIS ESQUERDOS: --> 5, 7, 8, 3, 1");
+		arvore.visitaPreOrdem();
+
+		arvore = builder.montaArvoreCheia();
+		System.out.println("\n\n\nARVORE CHEIA: --> 5, 7, 8, 6, 3, 4, 1");
+		arvore.visitaPreOrdem();
 	}
 	
-	@Test
-	void profundidadeArvoreVazia() {
-		arvore = builder.montaArvoreVazia();
-		assertEquals(0, arvore.profundidade(null));
-	}
+	// #-#-# VISITA IN ORDEM #-#-#
 	
 	@Test
-	void profundidadeArvoreApenasRaiz() {
-		arvore = builder.montaArvoreSoRaiz();
-		No noBusca = arvore.getRaiz();
-		assertEquals(0, arvore.profundidade(noBusca));
+	void visitaInOrdemArvoreComElementos() {
+		System.out.println("\n\n#-#-# VISITA IN ORDEM #-#-#");
+		arvore = builder.montaArvoreUmFilhoDireito();
+		System.out.println("\n\n\nUM FILHO DIREITO: --> 7, 5");
+		arvore.visitaInOrdem();
+
+		arvore = builder.montaArvoreUmFilhoEsquerdo();
+		System.out.println("\n\n\nUM FILHO ESQUERDO: --> 5, 3");
+		arvore.visitaInOrdem();
+
+		arvore = builder.montaArvoreDoisFilhos();
+		System.out.println("\n\n\nDOIS FILHOS: --> 7, 5, 3");
+		arvore.visitaInOrdem();
+
+		arvore = builder.montaArvoreUmDireitoDoisEsquerdos();
+		System.out.println("\n\n\nUM FILHO DIREITO E DOIS ESQUERDOS: --> 7, 5, 3, 1");
+		arvore.visitaInOrdem();
+
+		arvore = builder.montaArvoreDoisDireitoUmEsquerdos();
+		System.out.println("\n\n\nUM FILHO ESQUERDO E DOIS DIREITOS: --> 8, 7, 5, 3");
+		arvore.visitaInOrdem();
+
+		arvore = builder.montaArvoreDoisDireitoDoisEsquerdos();
+		System.out.println("\n\n\nDOIS FILHOS DIREITOS E DOIS ESQUERDOS: --> 8, 7, 5, 3, 1");
+		arvore.visitaInOrdem();
+
+		arvore = builder.montaArvoreCheia();
+		System.out.println("\n\n\nARVORE CHEIA: --> 8, 7, 6, 5, 4, 3, 1");
+		arvore.visitaInOrdem();
 	}
 	
-	@Test
-	void profundidadeArvoreComElementos() {
-		arvore = builder.montaArvoreSoUmFilhoDireito();
-		No noBusca1 = arvore.getRaiz().getDireito();
-		assertEquals(1, arvore.profundidade(noBusca1));
-		
-		arvore = builder.montaArvoreSoUmFilhoEsquerda();
-		No noBusca2 = arvore.getRaiz().getEsquerdo();
-		assertEquals(1, arvore.profundidade(noBusca2));
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoUmEsquerda();
-		No noBusca3 = arvore.getRaiz().getDireito();
-		assertEquals(1, arvore.profundidade(noBusca3));
-		
-		arvore = builder.montaArvoreSoDoisFilhoDireitoUmEsquerda();
-		No noBusca4 = arvore.getRaiz().getDireito().getDireito();
-		assertEquals(2, arvore.profundidade(noBusca4));
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoDoisEsquerda();
-		No noBusca5 = arvore.getRaiz().getEsquerdo().getEsquerdo();
-		assertEquals(2, arvore.profundidade(noBusca5));
-		
-		arvore = builder.montaArvoreBinariaCheia();
-		No noBusca6 = arvore.getRaiz().getDireito().getDireito();
-		assertEquals(2, arvore.profundidade(noBusca6));
-	}
+	// #-#-# VISITA POS ORDEM #-#-#
 	
 	@Test
-	void pegarNoArvoreVazia() {
-		arvore = builder.montaArvoreVazia();
-		assertEquals(null, arvore.pegarNoArvore(1));
+	void visitaPosOrdemArvoreComElementos() {
+		System.out.println("\n\n#-#-# VISITA POS ORDEM #-#-#");
+		arvore = builder.montaArvoreUmFilhoDireito();
+		System.out.println("\n\n\nUM FILHO DIREITO: --> 7, 5");
+		arvore.visitaPosOrdem();
+
+		arvore = builder.montaArvoreUmFilhoEsquerdo();
+		System.out.println("\n\n\nUM FILHO ESQUERDO: --> 3, 5");
+		arvore.visitaPosOrdem();
+
+		arvore = builder.montaArvoreDoisFilhos();
+		System.out.println("\n\n\nDOIS FILHOS: --> 7, 3, 5");
+		arvore.visitaPosOrdem();
+
+		arvore = builder.montaArvoreUmDireitoDoisEsquerdos();
+		System.out.println("\n\n\nUM FILHO DIREITO E DOIS ESQUERDOS: --> 7, 1, 3, 5");
+		arvore.visitaPosOrdem();
+
+		arvore = builder.montaArvoreDoisDireitoUmEsquerdos();
+		System.out.println("\n\n\nUM FILHO ESQUERDO E DOIS DIREITOS: --> 8, 7, 3, 5");
+		arvore.visitaPosOrdem();
+
+		arvore = builder.montaArvoreDoisDireitoDoisEsquerdos();
+		System.out.println("\n\n\nDOIS FILHOS DIREITOS E DOIS ESQUERDOS: --> 8, 7, 1, 3, 5");
+		arvore.visitaPosOrdem();
+
+		arvore = builder.montaArvoreCheia();
+		System.out.println("\n\n\nARVORE CHEIA: --> 8, 6, 7, 4, 1, 3, 5");
+		arvore.visitaPosOrdem();
 	}
 	
-	@Test
-	void pegarNoArvoreApenasRaiz() {
-		arvore = builder.montaArvoreSoRaiz();
-		assertEquals(5, arvore.pegarNoArvore(5).getValor());
-	}
 	
-	@Test
-	void pegarNoArvoreComElementos() {
-		arvore = builder.montaArvoreSoUmFilhoDireito();
-		assertEquals(7, arvore.pegarNoArvore(7).getValor());
-		
-		arvore = builder.montaArvoreSoUmFilhoEsquerda();
-		assertEquals(3, arvore.pegarNoArvore(3).getValor());
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoUmEsquerda();
-		assertEquals(7, arvore.pegarNoArvore(7).getValor());
-		assertEquals(3, arvore.pegarNoArvore(3).getValor());
-		
-		arvore = builder.montaArvoreSoDoisFilhoDireitoUmEsquerda();
-		assertEquals(8, arvore.pegarNoArvore(8).getValor());
-		assertEquals(7, arvore.pegarNoArvore(7).getValor());
-		assertEquals(3, arvore.pegarNoArvore(3).getValor());
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoDoisEsquerda();
-		assertEquals(1, arvore.pegarNoArvore(1).getValor());
-		assertEquals(7, arvore.pegarNoArvore(7).getValor());
-		assertEquals(3, arvore.pegarNoArvore(3).getValor());
-		
-		arvore = builder.montaArvoreBinariaCheia();
-		assertEquals(6, arvore.pegarNoArvore(6).getValor());
-		assertEquals(8, arvore.pegarNoArvore(8).getValor());
-		assertEquals(7, arvore.pegarNoArvore(7).getValor());
-		
-		assertEquals(4, arvore.pegarNoArvore(4).getValor());
-		assertEquals(1, arvore.pegarNoArvore(1).getValor());
-		assertEquals(3, arvore.pegarNoArvore(3).getValor());
-	}
 	
-	@Test
-	void contemArvoreVazia() {
-		arvore = builder.montaArvoreVazia();
-		assertThrows(IllegalArgumentException.class, () -> arvore.contem(2));
-	}
 	
-	@Test
-	void contemArvoreApenasRaiz() {
-		arvore = builder.montaArvoreSoRaiz();
-		assertTrue(arvore.contem(5));
-		assertEquals(false, arvore.contem(8));
-	}
 	
-	@Test
-	void contemArvoreComElementos() {
-		arvore = builder.montaArvoreSoUmFilhoDireito();
-		assertTrue(arvore.contem(7));
-		assertFalse(arvore.contem(12));
-		
-		arvore = builder.montaArvoreSoUmFilhoEsquerda();
-		assertTrue(arvore.contem(3));
-		assertFalse(arvore.contem(15));
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoUmEsquerda();
-		assertTrue(arvore.contem(7));
-		assertTrue(arvore.contem(3));
-		assertFalse(arvore.contem(72));
-		
-		arvore = builder.montaArvoreSoDoisFilhoDireitoUmEsquerda();
-		assertTrue(arvore.contem(8));
-		assertTrue(arvore.contem(7));
-		assertTrue(arvore.contem(3));
-		assertFalse(arvore.contem(65));
-		
-		arvore = builder.montaArvoreSoUmFilhoDireitoDoisEsquerda();
-		assertTrue(arvore.contem(3));
-		assertTrue(arvore.contem(7));
-		assertTrue(arvore.contem(1));
-		assertFalse(arvore.contem(32));
-		
-		arvore = builder.montaArvoreBinariaCheia();
-		assertTrue(arvore.contem(6));
-		assertTrue(arvore.contem(8));
-		assertTrue(arvore.contem(7));
-		
-		assertFalse(arvore.contem(35));
-		
-		assertTrue(arvore.contem(4));
-		assertTrue(arvore.contem(1));
-		assertTrue(arvore.contem(3));
-	}
+	
+	
 
 }
